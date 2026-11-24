@@ -2,13 +2,17 @@
 
 Запуск: python build.py
 """
-import re, shutil, pathlib
+import html, re, shutil, pathlib
+import docx2html
 
 ROOT = pathlib.Path(__file__).parent
 SRC = ROOT / "src"
 OUT = ROOT / "docs"
+LECTURES = ["4.1", "4.2"]  # src/lectures/lecture-<n>.docx
 
 ICONS = {
+    "file": '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+    "download": '<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
     "cube": '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
     "book": '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
     "fork": '<circle cx="12" cy="19" r="2.5"/><circle cx="6" cy="5" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M6 7.5V9a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V7.5"/><path d="M12 12v4.5"/>',
@@ -33,6 +37,7 @@ NAV = [
     ("Учить", [
         ("index", "3D-модель", "cube"),
         ("notes", "Конспект", "book"),
+        ("lectures", "Лекции", "file"),
         ("schemes", "Схемы", "fork"),
         ("physiology", "Физиология", "wind"),
         ("glossary", "Словарь", "dict"),
@@ -48,6 +53,7 @@ NAV = [
 PAGES = {
     "index": dict(title="Дыхательная система", desc="3D-модель дыхательных путей и лёгких, конспект, схемы, тесты и тренажёры по темам 4.1–4.2", scripts=["https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js", "assets/model3d.js"]),
     "notes": dict(title="Конспект · Дыхательная система", desc="Полный конспект тем 4.1 и 4.2: дыхательные пути, лёгкие, плевра, физиология дыхания", scripts=["assets/notes.js"]),
+    "lectures": dict(title="Лекции · Дыхательная система", desc="Оригинальные конспекты лекций 4.1 и 4.2 полностью: читать на сайте или скачать файлы Word", scripts=["assets/lectures.js"]),
     "schemes": dict(title="Схемы · Дыхательная система", desc="Интерактивные схемы: носовые ходы, гортань, бронхиальное дерево, границы лёгких и плевры", scripts=["assets/schemes.js"]),
     "physiology": dict(title="Физиология · Дыхательная система", desc="Дыхательный цикл, спирограмма, газообмен, транспорт газов и регуляция дыхания", scripts=["assets/physiology.js"]),
     "glossary": dict(title="Словарь · Дыхательная система", desc="Термины с латинскими названиями и определениями", scripts=["assets/data-study.js", "assets/glossary.js"]),
@@ -129,17 +135,36 @@ LAYOUT = """<!doctype html>
 def render_icons(html):
     return re.sub(r"\{\{icon:([a-z]+)\}\}", lambda m: icon(m.group(1)), html)
 
+def lecture_parts():
+    """Полный текст лекций из .docx для страницы «Лекции» и копии файлов для скачивания."""
+    (OUT / "files").mkdir(parents=True, exist_ok=True)
+    parts = {}
+    for n in LECTURES:
+        src = SRC / "lectures" / f"lecture-{n}.docx"
+        if not src.exists():
+            continue
+        shutil.copy(src, OUT / "files" / src.name)
+        prefix = "l" + n.replace(".", "")
+        body, toc = docx2html.convert(src, prefix)
+        kb = src.stat().st_size / 1024
+        parts[f"lecture-body:{n}"] = body
+        parts[f"lecture-toc:{n}"] = "\n".join(f'<a href="#{sid}" data-for="{sid}">{html.escape(label)}</a>' for sid, label in toc)
+        parts[f"lecture-size:{n}"] = f"{kb:.0f} КБ"
+    return parts
+
 def build():
     (OUT / "assets").mkdir(parents=True, exist_ok=True)
     for name in ("data-quiz.js", "data-study.js"):
         if (SRC / name).exists():
             shutil.copy(SRC / name, OUT / "assets" / name)
+    lec = lecture_parts()
     for slug, meta in PAGES.items():
         src = SRC / "pages" / f"{slug}.html"
         if not src.exists():
             print("skip (no source):", slug)
             continue
         content = render_icons(src.read_text(encoding="utf-8"))
+        content = re.sub(r"\{\{(lecture-[a-z]+:[\d.]+)\}\}", lambda m: lec.get(m.group(1), ""), content)
         scripts = "\n".join(f'<script src="{s}"></script>' for s in meta["scripts"])
         html = LAYOUT.format(
             title=meta["title"], desc=meta["desc"], favicon=FAVICON, slug=slug,
