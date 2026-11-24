@@ -1,0 +1,93 @@
+<section class="hero">
+  <div class="hero-text">
+    <div class="muted small">Анатомия и физиология человека, темы 4.1 и 4.2</div>
+    <h1>Дыхательная система</h1>
+    <p class="lead">Модель дыхательных путей и лёгких, полный конспект двух лекций, схемы, тест на 140 вопросов, карточки, тренажёры и билеты. Всё по конспектам, без лишнего.</p>
+    <div class="row">
+      <a class="btn primary" href="notes.html">Открыть конспект</a>
+      <a class="btn" href="quiz.html">Пройти тест</a>
+    </div>
+    <p class="small muted">Модель можно вращать мышью или пальцем. Нажмите на любую часть, чтобы прочитать о ней, или включите «Дышать».</p>
+  </div>
+  <div>
+    <div class="viewer" data-viewer>
+      <canvas aria-label="3D-модель гортани, трахеи, бронхиального дерева, лёгких и диафрагмы"></canvas>
+      <div class="v-labels" data-labels></div>
+      <div class="v-tools">
+        <button class="v-btn" type="button" data-layer="lungs" aria-pressed="true"><span class="sw" style="background:var(--lobe-1)"></span>Лёгкие</button>
+        <button class="v-btn" type="button" data-layer="tree" aria-pressed="true"><span class="sw" style="background:var(--cartilage)"></span>Бронхи</button>
+        <button class="v-btn" type="button" data-layer="pleura" aria-pressed="false"><span class="sw" style="background:var(--air)"></span>Плевра</button>
+        <button class="v-btn" type="button" data-layer="diaph" aria-pressed="true"><span class="sw" style="background:var(--muscle)"></span>Диафрагма</button>
+        <button class="v-btn" type="button" data-layer="heart" aria-pressed="true"><span class="sw" style="background:var(--artery)"></span>Сердце</button>
+      </div>
+      <div class="v-zoom">
+        <button class="v-btn" type="button" data-breathe aria-pressed="false">Дышать</button>
+        <button class="v-btn" type="button" data-labels-toggle aria-pressed="true">Подписи</button>
+        <button class="v-btn" type="button" data-find aria-pressed="false">Найди на модели</button>
+        <button class="v-btn" type="button" data-zoom="in" aria-label="Приблизить">+</button>
+        <button class="v-btn" type="button" data-zoom="out" aria-label="Отдалить">−</button>
+        <button class="v-btn" type="button" data-reset aria-label="Сбросить вид">Сброс</button>
+      </div>
+      <div class="v-phase" data-phase hidden></div>
+    </div>
+    <div class="panel info-card" data-info aria-live="polite">
+      <div class="k">Как пользоваться</div>
+      <h3>Нажмите на часть модели</h3>
+      <p class="small" style="color:var(--ink-2)">Справа на модели — левое лёгкое пациента (2 доли и сердечная вырезка), слева — правое (3 доли). Трахея заканчивается бифуркацией, главные бронхи расходятся под углом 70°.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><h2>Путь воздуха</h2><p>Так воздух проходит при вдохе. Каждый шаг ведёт в нужный раздел конспекта.</p></div></div>
+  <nav class="route" aria-label="Путь воздуха">
+    <a href="notes.html#s-41-nose"><span class="n">1</span><span class="t">Полость носа</span><span class="s">очищение, согревание, увлажнение</span></a>
+    <a href="notes.html#s-41-pharynx"><span class="n">2</span><span class="t">Носоглотка</span><span class="s">через хоаны; слуховые трубы</span></a>
+    <a href="notes.html#s-41-larynx"><span class="n">3</span><span class="t">Гортань</span><span class="s">IV–VI шейные, самое узкое место</span></a>
+    <a href="notes.html#s-41-trachea"><span class="n">4</span><span class="t">Трахея</span><span class="s">9–13 см, 16–20 полуколец</span></a>
+    <a href="notes.html#s-41-bronchi"><span class="n">5</span><span class="t">Главные бронхи</span><span class="s">угол 70°, правый шире</span></a>
+    <a href="schemes.html#tree"><span class="n">6</span><span class="t">Бронхиальное дерево</span><span class="s">долевые, сегментарные, бронхиолы</span></a>
+    <a href="notes.html#s-42-lungs"><span class="n">7</span><span class="t">Ацинус</span><span class="s">единица лёгкого</span></a>
+    <a href="physiology.html#gas"><span class="n">8</span><span class="t">Альвеолы</span><span class="s">газообмен через барьер 0,5–1 мкм</span></a>
+  </nav>
+</section>
+
+<section class="section">
+  <div class="section-head"><div><h2>Как готовиться</h2><p>Порядок, в котором материал запоминается лучше всего.</p></div></div>
+  <div class="steps">
+    <a class="step" href="notes.html"><span class="n">1</span><h3>Прочитать конспект</h3><p>15 разделов, отмечайте прочитанные</p><span class="meta" data-step="notes"></span></a>
+    <a class="step" href="schemes.html"><span class="n">2</span><h3>Разобрать схемы</h3><p>Носовые ходы, гортань, границы, физиология</p><span class="meta">Схемы и физиология</span></a>
+    <a class="step" href="cards.html"><span class="n">3</span><h3>Выучить карточки</h3><p>Повторяйте то, что не знаете</p><span class="meta" data-step="cards"></span></a>
+    <a class="step" href="drills.html"><span class="n">4</span><h3>Тренажёры и тест</h3><p>Числа, сопоставления, 140 вопросов</p><span class="meta" data-step="quiz"></span></a>
+    <a class="step" href="tickets.html"><span class="n">5</span><h3>Ответить билет</h3><p>Три вопроса, таймер, план ответа</p><span class="meta" data-step="tickets"></span></a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div><h2>Прогресс по темам</h2><p>Учитывает прочитанный раздел, выученные карточки и верные ответы в тесте.</p></div>
+    <a class="btn sm" href="progress.html">Подробнее</a>
+  </div>
+  <div class="topic-bars" data-topic-bars></div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const A = window.App;
+  if (!A) return;
+  const box = document.querySelector("[data-topic-bars]");
+  box.innerHTML = A.TOPICS.map((t) => {
+    const m = A.topicMastery(t.id);
+    return `<a class="topic-bar" href="${A.notesLink(t.id)}"><span class="tb-name"><small>${t.th}</small>${t.n}</span><span class="bar good"><i style="width:${A.pct(m.total)}"></i></span><span class="pct">${A.pct(m.total)}</span></a>`;
+  }).join("");
+  const st = A.state;
+  const read = Object.keys(st.notes).length;
+  let known = 0; for (const id in st.cards) if (st.cards[id].box >= 2) known++;
+  let ok = 0; for (const id in st.quiz) if (st.quiz[id].last) ok++;
+  const set = (k, v) => { const el = document.querySelector(`[data-step="${k}"]`); if (el) el.textContent = v; };
+  set("notes", `Прочитано ${read} из 15`);
+  set("cards", known ? `Выучено ${known}` : "Ещё не начинали");
+  set("quiz", ok ? `Верных ответов ${ok} из 140` : "Ещё не начинали");
+  set("tickets", Object.keys(st.tickets).length ? `Отвечено билетов ${Object.keys(st.tickets).length}` : "36 вопросов в банке");
+});
+</script>

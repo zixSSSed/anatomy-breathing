@@ -1,0 +1,20 @@
+<div class="page-head">
+  <div class="crumb">Проверить себя</div>
+  <h1>Билеты</h1>
+  <p class="lead">Билет из трёх вопросов: по анатомии дыхательных путей, по лёгким и плевре и по физиологии. Ответьте вслух или письменно, потом откройте план ответа и оцените себя.</p>
+</div>
+<div class="split" style="grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)">
+  <div class="panel ticket" data-ticket></div>
+  <div class="stack">
+    <div class="panel">
+      <div class="row between"><h4>Таймер</h4><div class="seg" role="group" aria-label="Время на билет"><button type="button" aria-pressed="false" data-min="5">5 мин</button><button type="button" aria-pressed="true" data-min="10">10 мин</button><button type="button" aria-pressed="false" data-min="15">15 мин</button></div></div>
+      <div class="timer" data-timer style="margin:16px 0">10:00</div>
+      <div class="row"><button class="btn primary sm" type="button" data-timer-start>Старт</button><button class="btn sm" type="button" data-timer-reset>Сбросить</button></div>
+    </div>
+    <div class="panel">
+      <h4 style="margin-bottom:8px">Все вопросы билетов</h4>
+      <p class="small muted" style="margin-bottom:8px">Можно открыть любой вопрос и потренироваться отдельно.</p>
+      <div style="display:grid;gap:4px;max-height:420px;overflow:auto" data-ticket-list></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,188 @@
+<div class="page-head">
+  <div class="crumb">Тема 4.2, разделы 4–10</div>
+  <h1>Физиология дыхания</h1>
+  <p class="lead">Как воздух попадает в лёгкие, что происходит с газами дальше и кто всем этим управляет. Анимацию и калькулятор можно крутить вручную.</p>
+  <div class="chips" role="navigation" aria-label="Разделы страницы">
+    <a class="chip" href="#stages">Этапы дыхания</a>
+    <a class="chip" href="#air">Состав воздуха</a>
+    <a class="chip" href="#cycle">Дыхательный цикл</a>
+    <a class="chip" href="#gas">Газообмен и транспорт</a>
+    <a class="chip" href="#reg">Регуляция</a>
+    <a class="chip" href="#volumes">Лёгочные объёмы</a>
+  </div>
+</div>
+
+<section class="section" id="stages" style="margin-top:24px">
+  <div class="section-head"><div><h2>Три этапа дыхания</h2><p>Дыхание — процесс, в результате которого организм потребляет O₂ и выделяет CO₂.</p></div></div>
+  <div class="grid g3">
+    <div class="panel">
+      <div class="tag accent">1 этап</div>
+      <h3 style="margin:10px 0 8px">Внешнее дыхание</h3>
+      <ul class="small" style="margin:0;padding-left:18px;color:var(--ink-2)">
+        <li>обмен газов между атмосферным и альвеолярным воздухом</li>
+        <li>газообмен между альвеолярным воздухом и кровью лёгочных капилляров</li>
+      </ul>
+      <p class="small muted" style="margin-top:10px">Обеспечивает аппарат внешнего дыхания: дыхательные пути, лёгкие, плевра, скелет и мышцы грудной клетки, диафрагма</p>
+    </div>
+    <div class="panel">
+      <div class="tag accent">2 этап</div>
+      <h3 style="margin:10px 0 8px">Транспорт газов кровью</h3>
+      <p class="small" style="color:var(--ink-2)">O₂ переносится к тканям, CO₂ — от тканей к лёгким, в растворённом и химически связанном виде</p>
+    </div>
+    <div class="panel">
+      <div class="tag accent">3 этап</div>
+      <h3 style="margin:10px 0 8px">Внутреннее (тканевое) дыхание</h3>
+      <ul class="small" style="margin:0;padding-left:18px;color:var(--ink-2)">
+        <li>газообмен между кровью и тканями</li>
+        <li>клеточное дыхание — клетки потребляют O₂ и выделяют CO₂</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="air">
+  <div class="section-head"><div><h2>Состав воздуха</h2><p>Азота везде около 80%, он и инертные газы в газообмене не участвуют. Интересны O₂ и CO₂ — у них разные шкалы.</p></div></div>
+  <div class="split">
+    <figure class="figure" style="margin:0"><svg viewBox="0 0 640 300" role="img" aria-label="Содержание O₂ и CO₂ в атмосферном, выдыхаемом и альвеолярном воздухе" data-air></svg>
+      <div class="legend" style="margin-top:8px"><span><i style="background:var(--ink-3)"></i>атмосферный</span><span><i style="background:var(--accent)"></i>выдыхаемый</span><span><i style="background:var(--lobe-3)"></i>альвеолярный</span></div>
+    </figure>
+    <div class="stack">
+      <div class="note"><h4>Почему в выдыхаемом O₂ больше, чем в альвеолярном</h4><p>Выдыхаемый воздух — смесь альвеолярного и воздуха мёртвого пространства, который в газообмене не участвовал.</p></div>
+      <div class="note num"><h4>Мёртвое пространство</h4><p>Около 140 мл вдоха остаётся в воздухоносных путях. Поэтому из 500 мл спокойного вдоха до альвеол доходит около 350 мл.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cycle">
+  <div class="section-head">
+    <div><h2>Дыхательный цикл</h2><p>Вдох, выдох и непостоянная пауза. Лёгкие пассивно следуют за грудной клеткой: в них нет мышечной ткани.</p></div>
+    <div class="row">
+      <button class="btn primary sm" type="button" data-cycle-play>{{icon:arrow}}<span>Запустить</span></button>
+    </div>
+  </div>
+  <div class="split">
+    <figure class="figure" style="margin:0">
+      <svg viewBox="0 0 420 340" role="img" aria-label="Анимация вдоха и выдоха: грудная клетка, лёгкие и диафрагма" data-cycle></svg>
+      <div class="slider" style="margin-top:12px">
+        <label for="cycle-range">Положение в цикле</label><output data-cycle-out class="tnum">выдох</output>
+        <input id="cycle-range" type="range" min="0" max="1000" value="0" data-cycle-range>
+      </div>
+    </figure>
+    <div class="stack">
+      <div class="panel tight" aria-live="polite">
+        <div class="row between"><h3 data-phase-name>Выдох</h3><span class="tag" data-phase-time>1,2–6 с</span></div>
+        <ol class="flow" style="margin-top:12px" data-phase-steps></ol>
+      </div>
+      <div class="note num"><h4>Запомни</h4><p>Вдох 0,9–4,7 с, выдох 1,2–6 с. Частота дыхания взрослого 16–20 в минуту.</p></div>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:24px">
+    <div class="panel">
+      <h3 style="margin-bottom:12px">Механизм первого вдоха</h3>
+      <ol class="flow">
+        <li>Перевязка пуповины — газообмен через пупочные сосуды прекращается</li>
+        <li>В крови накапливается CO₂ и не хватает O₂</li>
+        <li>Они гуморально возбуждают дыхательный центр</li>
+        <li>Импульсы к дыхательным мышцам — первый вдох</li>
+        <li>Открывается голосовая щель, воздух поступает в альвеолы, лёгкие расправляются</li>
+        <li>Первый выдох — крик; альвеолы не слипаются благодаря сурфактанту</li>
+      </ol>
+    </div>
+    <div class="panel">
+      <h3 style="margin-bottom:12px">Что влияет на частоту и глубину</h3>
+      <ul style="margin:0;padding-left:20px;color:var(--ink-2)">
+        <li>эмоциональное состояние</li><li>умственная и физическая нагрузка</li><li>химический состав крови</li>
+        <li>заболевания дыхательных путей</li><li>тренированность</li><li>температура</li><li>интенсивность обмена веществ</li>
+      </ul>
+      <p class="small muted" style="margin-top:12px">У недоношенных детей мало сурфактанта, часть альвеол не раскрывается — отсюда дыхательные расстройства.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="gas">
+  <div class="section-head"><div><h2>Газообмен и транспорт газов</h2><p>Газы идут по диффузии — из области высокого парциального давления в область низкого, пока не наступит равновесие.</p></div></div>
+  <div class="split">
+    <figure class="figure" style="margin:0">
+      <div class="fig-head"><h4>Аэрогематический барьер</h4><span class="tag">0,5–1 мкм</span></div>
+      <svg viewBox="0 0 560 330" role="img" aria-label="Слои аэрогематического барьера между альвеолой и кровью" data-barrier></svg>
+    </figure>
+    <div class="panel detail" data-barrier-detail aria-live="polite">
+      <div class="k">Барьер из пяти слоёв</div>
+      <h3>Нажмите на слой</h3>
+      <p>O₂ идёт из альвеолы в кровь, CO₂ — обратно. После газообмена кровь становится артериальной.</p>
+    </div>
+  </div>
+  <div class="grid g2" style="margin-top:24px">
+    <div class="figure">
+      <div class="fig-head"><h4>Как кровь переносит CO₂</h4></div>
+      <svg viewBox="0 0 520 150" role="img" aria-label="Доли транспорта CO₂" data-co2></svg>
+      <ul class="small" style="margin:12px 0 0;padding-left:18px;color:var(--ink-2)">
+        <li>Hb + CO₂ ⇄ HbCO₂ — карбгемоглобин</li>
+        <li>CO₂ + H₂O → H₂CO₃ → H⁺ + HCO₃⁻; карбоангидраза ускоряет реакцию в 20 000 раз</li>
+        <li>В тканевых капиллярах HCO₃⁻ + Na⁺, K⁺ → NaHCO₃, KHCO₃</li>
+        <li>⅔ CO₂ в плазме, ⅓ — в эритроцитах</li>
+      </ul>
+    </div>
+    <div class="figure">
+      <div class="fig-head"><h4>Как кровь переносит O₂</h4></div>
+      <svg viewBox="0 0 520 150" role="img" aria-label="Транспорт O₂" data-o2></svg>
+      <ul class="small" style="margin:12px 0 0;padding-left:18px;color:var(--ink-2)">
+        <li>Hb + O₂ ⇄ HbO₂ — оксигемоглобин; чем выше парциальное давление O₂, тем его больше</li>
+        <li>В тканях высокое парциальное давление CO₂ расщепляет HbO₂ → Hb + O₂, кислород уходит в ткани</li>
+        <li>Hb + CO = HbCO — карбоксигемоглобин, устойчивый, O₂ не связывает</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="reg">
+  <div class="section-head"><div><h2>Регуляция дыхания</h2><p>Дыхательный центр — в продолговатом мозге, двусторонний, в каждой половине центр вдоха и центр выдоха. Обладает автоматией.</p></div></div>
+  <div class="split">
+    <div class="figure">
+      <div class="fig-head"><h4>Три уровня по М. В. Сергиевскому</h4></div>
+      <svg viewBox="0 0 520 330" role="img" aria-label="Уровни регуляции дыхательного центра" data-levels></svg>
+    </div>
+    <div class="stack">
+      <div class="panel tight">
+        <h4 style="margin-bottom:10px">Гуморальная регуляция</h4>
+        <ol class="flow">
+          <li>Избыток CO₂ в крови</li>
+          <li>Возбуждается центр вдоха, тормозится центр выдоха</li>
+          <li>Импульсы идут в спинной мозг</li>
+          <li>Сокращаются наружные межрёберные мышцы и диафрагма</li>
+          <li>Объём грудной клетки растёт — вдох</li>
+        </ol>
+        <p class="small muted" style="margin-top:10px">Недостаток CO₂ и избыток O₂ могут вызвать временную остановку дыхания.</p>
+      </div>
+    </div>
+  </div>
+  <div class="grid g3" style="margin-top:24px">
+    <div class="panel"><h4>Постоянные рефлексы</h4><p class="small" style="margin-top:6px;color:var(--ink-2)">Рецепторы растяжения альвеол, корня лёгкого, плевры, хеморецепторы дуги аорты и сонных синусов, рецепторы дыхательных мышц. Растяжение лёгких → импульсы в центр выдоха → выдох.</p></div>
+    <div class="panel"><h4>Непостоянные рефлексы</h4><ul class="small" style="margin:6px 0 0;padding-left:18px;color:var(--ink-2)"><li>NH₃, Cl₂, дым — спазм голосовой щели, задержка дыхания</li><li>пыль в носу — чихание</li><li>гортань, трахея, бронхи — кашель</li></ul></div>
+    <div class="panel"><h4>Нервная система</h4><ul class="small" style="margin:6px 0 0;padding-left:18px;color:var(--ink-2)"><li>Кора — произвольно: речь, пение</li><li>Симпатическая — расширяет бронхи, усиливает дыхание</li><li>Парасимпатическая — суживает бронхи, урежает дыхание</li></ul></div>
+  </div>
+</section>
+
+<section class="section" id="volumes">
+  <div class="section-head"><div><h2>Лёгочные объёмы</h2><p>Спирограмма: спокойное дыхание, максимальный вдох и максимальный выдох. Двигайте ползунки — график и ёмкости пересчитаются.</p></div></div>
+  <div class="split">
+    <figure class="figure" style="margin:0">
+      <svg viewBox="0 0 680 380" role="img" aria-label="Спирограмма с лёгочными объёмами" data-spiro></svg>
+      <div class="cap" data-spiro-cap>Нажмите на скобку справа, чтобы увидеть определение объёма.</div>
+    </figure>
+    <div class="panel calc">
+      <div class="slider"><label for="v-do">ДО, дыхательный объём</label><output class="tnum" data-out="do"></output><input id="v-do" type="range" min="300" max="800" step="10" value="500" data-v="do"></div>
+      <div class="slider"><label for="v-rovd">РОВд, резервный объём вдоха</label><output class="tnum" data-out="rovd"></output><input id="v-rovd" type="range" min="800" max="3000" step="50" value="1500" data-v="rovd"></div>
+      <div class="slider"><label for="v-rovyd">РОВыд, резервный объём выдоха</label><output class="tnum" data-out="rovyd"></output><input id="v-rovyd" type="range" min="600" max="2200" step="50" value="1500" data-v="rovyd"></div>
+      <div class="slider"><label for="v-ool">ООЛ, остаточный объём</label><output class="tnum" data-out="ool"></output><input id="v-ool" type="range" min="800" max="1800" step="50" value="1200" data-v="ool"></div>
+      <div class="slider"><label for="v-chdd">ЧДД, вдохов в минуту</label><output class="tnum" data-out="chdd"></output><input id="v-chdd" type="range" min="8" max="40" step="1" value="16" data-v="chdd"></div>
+      <div class="grid g2" style="gap:10px">
+        <div class="result"><b data-res="zhel"></b><span>ЖЕЛ, мл<br><small data-norm="zhel"></small></span></div>
+        <div class="result"><b data-res="oel"></b><span>ОЕЛ, мл<br><small data-norm="oel"></small></span></div>
+        <div class="result"><b data-res="mod"></b><span>МОД, л/мин<br><small data-norm="mod"></small></span></div>
+        <div class="result"><b data-res="alv"></b><span>мл за вдох<br><small>доходит до альвеол</small></span></div>
+      </div>
+      <div class="row"><button class="btn sm ghost" type="button" data-v-reset>Вернуть нормальные значения</button></div>
+    </div>
+  </div>
+</section>
