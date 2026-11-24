@@ -21,7 +21,7 @@
   } catch (e) {
     return fallback("Браузер не поддерживает WebGL.");
   }
-  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = (window.App && App.reduce) || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.setClearColor(0x000000, 0);

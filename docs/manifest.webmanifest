@@ -1,0 +1,30 @@
+{
+ "name": "Дыхательная система",
+ "short_name": "Дыхание",
+ "description": "Анатомия и физиология дыхательной системы: 3D-модель, конспект, тесты, карточки",
+ "lang": "ru",
+ "start_url": "./index.html",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#0B0D18",
+ "theme_color": "#0B0D18",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

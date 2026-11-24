@@ -2,7 +2,7 @@
 
 Запуск: python build.py
 """
-import html, re, shutil, pathlib
+import hashlib, html, json, re, shutil, pathlib
 import docx2html
 import atlas
 
@@ -13,6 +13,8 @@ LECTURES = ["4.1", "4.2"]  # src/lectures/lecture-<n>.docx
 
 ICONS = {
     "file": '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+    "sliders": '<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
+    "grid": '<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/>',
     "download": '<path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
     "cube": '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/>',
     "book": '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
@@ -81,6 +83,19 @@ SVG_DEFS = ('<svg width="0" height="0" style="position:absolute" aria-hidden="tr
             '<linearGradient id="traceGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--vein)"/><stop offset=".55" stop-color="#9B53C9"/><stop offset="1" stop-color="var(--artery)"/></linearGradient>'
             '</defs></svg>')
 
+TABS = [("index", "Модель", "cube"), ("notes", "Конспект", "book"), ("cards", "Карточки", "cards"), ("quiz", "Тест", "list")]
+
+def tabbar_html(active):
+    out = []
+    main = [t[0] for t in TABS]
+    for slug, name, ic in TABS:
+        cur = ' aria-current="page"' if slug == active else ""
+        href = "index.html" if slug == "index" else f"{slug}.html"
+        out.append(f'  <a class="tab" href="{href}" data-tab="{slug}"{cur}>{icon(ic)}<span>{name}</span></a>')
+    more = ' aria-current="page"' if active not in main else ""
+    out.append(f'  <button class="tab" type="button" data-menu data-tab="more"{more}>{icon("grid")}<span>Ещё</span></button>')
+    return "\n".join(out)
+
 def nav_html(active):
     out = []
     for label, items in NAV:
@@ -100,19 +115,27 @@ LAYOUT = """<!doctype html>
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="icon" href="{favicon}">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Дыхание">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#F3F4FB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0D18" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&family=Literata:ital,opsz,wght@1,7..72,400..500&display=swap">
 <link rel="stylesheet" href="assets/style.css">
-<script>document.documentElement.classList.add('js');try{{var t=localStorage.getItem('resp-theme');if(t)document.documentElement.dataset.theme=t}}catch(e){{}}</script>
+<script>(function(){{var d=document.documentElement;d.classList.add('js');try{{var t=localStorage.getItem('resp-theme');if(t)d.dataset.theme=t;if(localStorage.getItem('resp-glass')==='on')d.dataset.glass='on';if(localStorage.getItem('resp-motion')==='reduce')d.dataset.motion='reduce'}}catch(e){{}}if(navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches))d.classList.add('standalone')}})()</script>
 </head>
 <body data-page="{slug}">
 {svg_defs}
 <div class="shell">
 <header class="topbar">
-  <button class="icon-btn menu" type="button" aria-label="Открыть меню" data-menu>{icon_menu}</button>
   <a class="brand" href="index.html">{brand_mark}<span class="brand-txt"><b>Дыхательная система</b><span>темы 4.1–4.2</span></span></a>
-  <button class="icon-btn" type="button" aria-label="Сменить тему" data-theme-toggle>{icon_sun}</button>
+  <button class="icon-btn" type="button" aria-label="Настройки" data-settings>{icon_sliders}</button>
 </header>
 <div class="scrim" data-scrim></div>
 <aside class="rail" aria-label="Разделы">
@@ -125,7 +148,7 @@ LAYOUT = """<!doctype html>
       <div class="row"><span>Общий прогресс</span><strong class="tnum" data-overall>0%</strong></div>
       <div class="bar"><i data-overall-bar></i></div>
     </a>
-    <button class="theme-btn" type="button" data-theme-toggle>{icon_moon}<span data-theme-label>Тёмная тема</span></button>
+    <button class="theme-btn" type="button" data-settings>{icon_sliders}<span>Настройки</span></button>
   </div>
 </aside>
 <main class="main" id="main">
@@ -138,6 +161,10 @@ LAYOUT = """<!doctype html>
 </div>
 </main>
 </div>
+<nav class="tabbar" aria-label="Основные разделы">
+  <span class="tab-lens" aria-hidden="true"></span>
+{tabbar}
+</nav>
 <div class="toast" role="status" aria-live="polite" data-toast></div>
 <script src="assets/core.js"></script>
 <script src="assets/illus.js"></script>
@@ -186,12 +213,45 @@ def build():
         html = LAYOUT.format(
             title=meta["title"], desc=meta["desc"], favicon=FAVICON, slug=slug,
             nav=nav_html(slug), content=content, scripts=scripts,
-            icon_menu=icon("menu"), icon_sun=icon("sun"), icon_moon=icon("moon"), brand_mark=BRAND_MARK, svg_defs=SVG_DEFS,
+            icon_menu=icon("menu"), icon_sun=icon("sun"), icon_moon=icon("moon"), brand_mark=BRAND_MARK, svg_defs=SVG_DEFS, icon_sliders=icon("sliders"), tabbar=tabbar_html(slug),
             progress_cur=' aria-current="page"' if slug == "progress" else "",
         )
         (OUT / f"{slug}.html").write_text(html, encoding="utf-8")
         print("built", slug)
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
+    write_pwa()
+
+MANIFEST = {
+    "name": "Дыхательная система",
+    "short_name": "Дыхание",
+    "description": "Анатомия и физиология дыхательной системы: 3D-модель, конспект, тесты, карточки",
+    "lang": "ru",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#0B0D18",
+    "theme_color": "#0B0D18",
+    "icons": [
+        {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+        {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+        {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+    ],
+}
+
+def write_pwa():
+    """manifest.webmanifest и sw.js: список файлов для работы без интернета и версия кэша по их содержимому."""
+    (OUT / "manifest.webmanifest").write_text(json.dumps(MANIFEST, ensure_ascii=False, indent=1), encoding="utf-8")
+    files = sorted(f.relative_to(OUT).as_posix() for f in OUT.rglob("*")
+                   if f.is_file() and f.name not in ("sw.js", ".nojekyll") and f.suffix != ".docx")
+    h = hashlib.sha1()
+    for rel in files:
+        h.update(rel.encode()); h.update((OUT / rel).read_bytes())
+    external = [atlas.IMAGES[k]["thumb"] for k in atlas.IMAGES] + ["https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"]
+    sw = (ROOT / "sw.template.js").read_text(encoding="utf-8")
+    sw = sw.replace("__VERSION__", h.hexdigest()[:12]).replace("__CORE__", json.dumps(["./"] + files, ensure_ascii=False)).replace("__EXTERNAL__", json.dumps(external))
+    (OUT / "sw.js").write_text(sw, encoding="utf-8")
+    print("pwa: version", h.hexdigest()[:12], "files", len(files))
 
 if __name__ == "__main__":
     build()

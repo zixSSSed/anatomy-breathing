@@ -63,7 +63,7 @@
     });
   }
 
-  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = (window.App && App.reduce) || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
   function hexRgb(h) {
     h = h.replace("#", "");

@@ -1,7 +1,7 @@
 /* Анимации: появление блоков при прокрутке, увеличение рисунков, конфетти, счётчики, кольца прогресса.
    Всё отключается при «уменьшить движение» в системе. */
 (function () {
-  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = (window.App && App.reduce) || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   /* ---------- появление при прокрутке ---------- */
   function reveal(root = document) {

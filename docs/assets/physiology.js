@@ -2,7 +2,7 @@
   const A = window.App;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduce = (window.App && App.reduce) || (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
   const fmt = (n, d = 0) => n.toLocaleString("ru-RU", { minimumFractionDigits: d, maximumFractionDigits: d });
 
   /* =================== AIR =================== */

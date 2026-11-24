@@ -196,3 +196,157 @@
   paintThemeButtons();
   refreshRail();
 })();
+
+/* ---------- настройки, iOS и работа без интернета ---------- */
+(function () {
+  const A = window.App;
+  const root = document.documentElement;
+  const store = {
+    get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} },
+  };
+  const mq = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : null;
+  A.reduce = (mq && mq.matches) || root.dataset.motion === "reduce";
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const standalone = root.classList.contains("standalone");
+
+  function paintThemeColor() {
+    const bg = getComputedStyle(root).getPropertyValue("--bg").trim() || "#0B0D18";
+    document.querySelectorAll('meta[name="theme-color"]').forEach((m) => { m.setAttribute("content", bg); m.removeAttribute("media"); });
+  }
+  function setTheme(v) {
+    if (v === "auto") { delete root.dataset.theme; store.set("resp-theme", null); }
+    else { root.dataset.theme = v; store.set("resp-theme", v); }
+    paintThemeColor();
+    window.dispatchEvent(new CustomEvent("themechange"));
+  }
+  function setGlass(on) {
+    if (on) root.dataset.glass = "on"; else delete root.dataset.glass;
+    store.set("resp-glass", on ? "on" : null);
+  }
+  function setMotion(v) {
+    if (v === "reduce") root.dataset.motion = "reduce"; else delete root.dataset.motion;
+    store.set("resp-motion", v === "reduce" ? "reduce" : null);
+  }
+
+  /* ---------- окно настроек ---------- */
+  let sheet, scrim, lastFocus, installEvt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    installEvt = e;
+    const b = sheet && sheet.querySelector("[data-install]");
+    if (b) b.hidden = false;
+  });
+  function build() {
+    scrim = document.createElement("div");
+    scrim.className = "sheet-scrim";
+    sheet = document.createElement("div");
+    sheet.className = "sheet";
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.setAttribute("aria-labelledby", "sheet-title");
+    const nativeSwitch = "switch" in HTMLInputElement.prototype;
+    const installTxt = isIOS
+      ? "Откройте сайт в Safari, нажмите «Поделиться» и выберите «На экран „Домой“». Сайт откроется как приложение, без адресной строки."
+      : "В Chrome или Edge нажмите «Установить» в адресной строке или кнопку справа. На iPhone: Safari → «Поделиться» → «На экран „Домой“».";
+    sheet.innerHTML = `
+      <div class="sheet-grab" aria-hidden="true"></div>
+      <div class="sheet-head"><h3 id="sheet-title">Настройки</h3><button class="icon-btn sheet-x" type="button" aria-label="Закрыть" data-sheet-close>${A.icon("x")}</button></div>
+      <div class="set-group">
+        <div class="set-row"><div class="set-txt"><b>Тема</b></div>
+          <div class="seg" role="group" aria-label="Тема"><button type="button" data-set-theme="auto">Авто</button><button type="button" data-set-theme="light">Светлая</button><button type="button" data-set-theme="dark">Тёмная</button></div></div>
+        <label class="set-row" for="set-glass"><div class="set-txt"><b>Жидкое стекло</b><small>Полупрозрачные панели и кнопки с размытием и бликами, как в iOS 26</small></div>
+          <input id="set-glass" class="switch${nativeSwitch ? " native" : ""}" type="checkbox"${nativeSwitch ? " switch" : ""}></label>
+        <div class="set-row"><div class="set-txt"><b>Анимации</b><small>«Меньше» убирает движение, конфетти и автоповорот модели</small></div>
+          <div class="seg" role="group" aria-label="Анимации"><button type="button" data-set-motion="auto">Как в системе</button><button type="button" data-set-motion="reduce">Меньше</button></div></div>
+      </div>
+      <div class="set-group">
+        <div class="set-row"><div class="set-txt"><b>${isIOS ? "Установить на iPhone" : "Установить как приложение"}</b><small>${installTxt}</small></div>
+          ${standalone ? `<span class="tag accent">Установлено</span>` : `<button class="btn sm" type="button" data-install${installEvt ? "" : " hidden"}>Установить</button>`}</div>
+        <div class="set-row"><div class="set-txt"><b>Без интернета</b><small data-offline>Проверяю…</small></div></div>
+      </div>
+      <div class="set-group"><a class="set-row link" href="progress.html"><div class="set-txt"><b>Прогресс и сброс</b><small>Что выучено и что повторить</small></div>${A.icon("right")}</a></div>`;
+    document.body.append(scrim, sheet);
+    scrim.addEventListener("click", close);
+    sheet.addEventListener("click", (e) => {
+      const t = e.target;
+      if (t.closest("[data-sheet-close]")) return close();
+      const th = t.closest("[data-set-theme]");
+      if (th) { setTheme(th.dataset.setTheme); return paint(); }
+      const mo = t.closest("[data-set-motion]");
+      if (mo) { setMotion(mo.dataset.setMotion); A.toast(mo.dataset.setMotion === "reduce" ? "Анимаций будет меньше. Полностью — после перехода на другую страницу" : "Анимации как в системе"); return paint(); }
+      if (t.closest("[data-install]") && installEvt) { installEvt.prompt(); installEvt = null; t.closest("[data-install]").hidden = true; }
+    });
+    sheet.querySelector("#set-glass").addEventListener("change", (e) => { setGlass(e.target.checked); A.toast(e.target.checked ? "Жидкое стекло включено" : "Жидкое стекло выключено"); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && sheet.classList.contains("open")) close(); });
+  }
+  function paint() {
+    const t = root.dataset.theme || "auto";
+    sheet.querySelectorAll("[data-set-theme]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.setTheme === t));
+    const m = root.dataset.motion === "reduce" ? "reduce" : "auto";
+    sheet.querySelectorAll("[data-set-motion]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.setMotion === m));
+    sheet.querySelector("#set-glass").checked = root.dataset.glass === "on";
+    const off = sheet.querySelector("[data-offline]");
+    if (!("serviceWorker" in navigator) || location.protocol === "file:") off.textContent = "Работает, когда сайт открыт по ссылке, а не как файл";
+    else navigator.serviceWorker.getRegistration().then((r) => {
+      off.textContent = r && r.active ? "Готово: после первого открытия сайт работает и без сети" : "Сохраняю файлы для работы без сети…";
+    });
+  }
+  function open() {
+    if (!sheet) build();
+    paint();
+    lastFocus = document.activeElement;
+    scrim.classList.add("open");
+    sheet.classList.add("open");
+    setTimeout(() => sheet.querySelector("[data-sheet-close]").focus(), 60);
+  }
+  function close() {
+    sheet.classList.remove("open");
+    scrim.classList.remove("open");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.addEventListener("click", (e) => { if (e.target.closest("[data-settings]")) { e.preventDefault(); open(); } });
+  A.openSettings = open;
+
+  /* ---------- линза активной вкладки ---------- */
+  const bar = document.querySelector(".tabbar");
+  if (bar) {
+    const lens = bar.querySelector(".tab-lens");
+    const tabs = [...bar.querySelectorAll(".tab")];
+    const cur = tabs.findIndex((t) => t.getAttribute("aria-current") === "page");
+    const place = (i, anim) => {
+      const t = tabs[i];
+      if (!t || !t.offsetWidth) return;
+      lens.style.transition = anim ? "" : "none";
+      lens.style.width = `${t.offsetWidth}px`;
+      lens.style.transform = `translateX(${t.offsetLeft}px)`;
+      lens.style.opacity = "1";
+    };
+    let prev = -1;
+    try { prev = parseInt(sessionStorage.getItem("resp-tab") || "-1", 10); } catch (e) {}
+    requestAnimationFrame(() => {
+      if (prev >= 0 && prev !== cur && !A.reduce) { place(prev, false); requestAnimationFrame(() => requestAnimationFrame(() => place(cur, true))); }
+      else place(cur, false);
+    });
+    try { sessionStorage.setItem("resp-tab", String(cur)); } catch (e) {}
+    window.addEventListener("resize", () => place(cur, false));
+    tabs.forEach((t, i) => t.addEventListener("click", () => { if (t.tagName === "A" && i !== cur) place(i, true); }));
+  }
+
+  /* ---------- подсказка об установке на iPhone ---------- */
+  if (isIOS && !standalone && !store.get("resp-ios-hint")) {
+    const hint = document.createElement("div");
+    hint.className = "ios-hint";
+    hint.setAttribute("role", "note");
+    hint.innerHTML = `<img class="ios-hint-ico" src="icons/apple-touch-icon.png" alt="" width="40" height="40"><span class="ios-hint-txt"><b>Установите как приложение</b><span>Safari → «Поделиться» → «На экран „Домой“». Будет работать без интернета</span></span><button type="button" class="icon-btn" aria-label="Скрыть подсказку">${A.icon("x")}</button>`;
+    document.body.appendChild(hint);
+    setTimeout(() => hint.classList.add("show"), 1500);
+    hint.querySelector("button").addEventListener("click", () => { hint.classList.remove("show"); store.set("resp-ios-hint", "1"); setTimeout(() => hint.remove(), 400); });
+  }
+
+  /* ---------- работа без интернета ---------- */
+  if ("serviceWorker" in navigator && location.protocol !== "file:") {
+    window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+  }
+  paintThemeColor();
+})();
