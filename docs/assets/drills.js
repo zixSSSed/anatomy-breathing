@@ -42,7 +42,10 @@
     if (a === b) { M.done.add(a); M.err = null; }
     else { M.errors++; M.err = [M.sel, key]; }
     M.sel = null;
-    if (M.done.size === M.set.pairs.length) A.setDrill(M.set.id, Math.round((M.set.pairs.length / (M.set.pairs.length + M.errors)) * 100));
+    if (M.done.size === M.set.pairs.length) {
+      A.setDrill(M.set.id, Math.round((M.set.pairs.length / (M.set.pairs.length + M.errors)) * 100));
+      if (!M.errors && window.FX) FX.confetti(90);
+    }
     renderMatch();
   }
 
@@ -185,6 +188,7 @@
         O.checked = true;
         const ok = O.items.filter((x, k) => x.i === k).length;
         A.setDrill(O.set.id, Math.round((ok / O.items.length) * 100));
+        if (ok === O.items.length && window.FX) FX.confetti(90);
         return renderOrder();
       }
       if (t.closest("[data-oshow]")) { O.items.sort((a, b) => a.i - b.i); O.checked = true; return renderOrder(); }
@@ -203,6 +207,7 @@
         S.checked = true;
         const ok = S.place.filter((p, i) => p === S.set.items[i][1]).length;
         A.setDrill(S.set.id, Math.round((ok / S.place.length) * 100));
+        if (ok === S.place.length && window.FX) FX.confetti(90);
         return renderSort();
       }
     }

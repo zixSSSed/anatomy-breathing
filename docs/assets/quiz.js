@@ -137,7 +137,7 @@
       <div class="split" style="align-items:start">
         <div class="panel">
           <div class="k muted small">${run.label} завершён${answered < run.items.length ? `, без ответа: ${run.items.length - answered}` : ""}</div>
-          <div class="row" style="align-items:baseline;gap:16px;margin:8px 0 4px"><span class="score-big">${score}<span class="muted" style="font-size:.45em"> из ${run.items.length}</span></span><span class="tag ${pct >= 0.75 ? "accent" : ""}">${verdict}, ${A.pct(pct)}</span></div>
+          <div class="row" style="align-items:baseline;gap:16px;margin:8px 0 4px"><span class="score-big"><span data-score>0</span><span class="muted" style="font-size:.45em"> из ${run.items.length}</span></span><span class="tag ${pct >= 0.75 ? "accent" : ""}">${verdict}, ${A.pct(pct)}</span></div>
           <div class="row" style="margin-top:16px">
             ${wrong.length ? `<button class="btn primary" type="button" data-redo>Ещё раз только ошибки (${wrong.length})</button>` : ""}
             <button class="btn" type="button" data-new>Новый тест</button>
@@ -154,6 +154,8 @@
         </div>
       </div>`;
     run.wrongIds = wrong.map((it) => it.id);
+    const sc = root.querySelector("[data-score]");
+    if (window.FX) { FX.countUp(sc, score, 900); if (pct >= 0.75) setTimeout(() => FX.confetti(), 300); } else sc.textContent = score;
   }
 
   root.addEventListener("click", (e) => {
