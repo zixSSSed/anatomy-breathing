@@ -1,0 +1,23 @@
+{
+  "name": "anatomy-breathing",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Дыхательная система: React-приложение для подготовки по анатомии и физиологии (темы 4.1–4.2)",
+  "scripts": {
+    "content": "python ../build.py",
+    "dev": "vite",
+    "build": "python ../build.py && vite build && node scripts/postbuild.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "motion": "12.23.12",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "three": "0.128.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "5.4.19"
+  }
+}

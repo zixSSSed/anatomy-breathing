@@ -1,0 +1,127 @@
+/* Дополнения для React-версии: общие перетекающие индикаторы, поиск, колода карточек, календарь. */
+
+/* ---------- боковая панель ---------- */
+.rail-search{display:flex;align-items:center;gap:10px;width:100%;height:40px;margin:0 0 18px;padding:0 10px 0 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-3);font-size:14px;text-align:left;transition:border-color .18s var(--ease),color .18s var(--ease)}
+.rail-search:hover{border-color:var(--line-2);color:var(--ink-2)}
+.rail-search span{flex:1}
+.rail-search .kbd{font-size:11px;height:20px}
+.nav-link{isolation:isolate}
+.nav-link[aria-current="page"]{background:transparent}
+.nav-pill{position:absolute;inset:0;z-index:-1;border-radius:12px;background:var(--accent-soft)}
+:root[data-glass="on"] .nav-pill{background:linear-gradient(165deg,var(--glass-sheen),transparent 60%),var(--accent-soft);box-shadow:inset 0 1px 0 var(--glass-edge-2)}
+:root[data-glass="on"] .nav-link[aria-current="page"]{background:transparent;box-shadow:none}
+.rail-progress{display:flex;align-items:center;gap:12px}
+.rp-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.rp-txt b{font-size:14px;font-weight:600}
+.rp-streak{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--ink-3)}
+.rp-streak .icon{width:14px;height:14px;color:var(--coral)}
+.rail-progress .ring-wrap span{font-size:10.5px}
+
+/* ---------- нижняя панель: линза перетекает между вкладками ---------- */
+.tab{isolation:isolate}
+.tab-lens{display:none}
+.tab-lens-r{position:absolute;inset:0;z-index:-1;border-radius:26px;background:var(--accent-soft)}
+:root[data-glass="on"] .tab-lens-r{background:linear-gradient(165deg,var(--glass-sheen),transparent 55%),var(--glass-tint-2);box-shadow:inset 0 1px 0 var(--glass-edge),inset 0 -1px 0 var(--glass-edge-2),0 4px 14px -4px var(--glass-shade)}
+@media (max-width:1023px){
+  .topbar .icon-btn{margin-left:0}
+  .topbar .brand{margin-right:auto}
+}
+
+/* ---------- серия дней ---------- */
+.streak-chip .icon{width:16px;height:16px;color:var(--ink-3)}
+.streak-chip.lit .icon{color:var(--coral);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--coral) 55%,transparent))}
+
+/* ---------- уведомления ---------- */
+.toast-host{position:fixed;left:0;right:0;bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:60;display:flex;justify-content:center;pointer-events:none;padding:0 16px}
+.toast-host .toast{position:static;transform:none;opacity:1;left:auto;bottom:auto}
+@media (max-width:1023px){.toast-host{bottom:calc(92px + env(safe-area-inset-bottom,0px))}}
+
+/* ---------- загрузка страницы ---------- */
+.page-loading{display:flex;gap:8px;justify-content:center;padding:120px 0}
+.page-loading span{width:10px;height:10px;border-radius:50%;background:var(--accent);animation:dotpulse 1s ease-in-out infinite}
+.page-loading span:nth-child(2){animation-delay:.15s;background:#9B53C9}
+.page-loading span:nth-child(3){animation-delay:.3s;background:var(--artery)}
+@keyframes dotpulse{0%,100%{transform:scale(.6);opacity:.4}50%{transform:scale(1);opacity:1}}
+
+/* ---------- поиск по сайту ---------- */
+.cmdk-scrim{position:fixed;inset:0;z-index:95;display:flex;justify-content:center;align-items:flex-start;padding:min(12vh,110px) 16px 16px;background:rgba(8,10,20,.42);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.cmdk{width:min(680px,100%);max-height:min(70vh,620px);display:flex;flex-direction:column;border-radius:22px;background:var(--surface);border:1px solid var(--line);box-shadow:0 30px 80px -20px rgba(0,0,0,.55);overflow:hidden}
+:root[data-glass="on"] .cmdk{background:linear-gradient(165deg,var(--glass-sheen),transparent 40%),var(--glass-tint-2);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);box-shadow:inset 0 1px 0 var(--glass-edge),0 30px 80px -20px rgba(0,0,0,.5)}
+.cmdk-input{display:flex;align-items:center;gap:12px;padding:0 16px;height:60px;border-bottom:1px solid var(--line)}
+.cmdk-input .icon{width:20px;height:20px;color:var(--ink-3)}
+.cmdk-input input{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-size:17px;color:var(--ink)}
+.cmdk-list{flex:1;overflow:auto;padding:8px;overscroll-behavior:contain}
+.cmdk-item{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:transparent;text-align:left;color:var(--ink)}
+.cmdk-item.on{background:var(--accent-soft)}
+.cmdk-ico{width:34px;height:34px;flex:none;border-radius:10px;display:grid;place-items:center;background:var(--surface-2);color:var(--ink-2)}
+.cmdk-item.on .cmdk-ico{background:var(--surface);color:var(--accent)}
+.cmdk-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.cmdk-title{font-size:15px;font-weight:500;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmdk-sub{font-size:13px;color:var(--ink-3);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cmdk-kind{flex:none;font-size:12px;color:var(--ink-3);padding:2px 8px;border-radius:7px;background:var(--surface-2)}
+.cmdk-empty{padding:28px 16px;text-align:center;color:var(--ink-3);font-size:14.5px}
+.cmdk-foot{display:flex;gap:16px;padding:10px 16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3)}
+.cmdk-foot span{display:flex;align-items:center;gap:4px}
+.cmdk mark{background:color-mix(in srgb,var(--coral) 28%,transparent);color:inherit;border-radius:3px}
+@media (max-width:640px){
+  .cmdk-scrim{padding:calc(10px + env(safe-area-inset-top,0px)) 10px 10px}
+  .cmdk{max-height:calc(100dvh - 120px)}
+  .cmdk-foot{display:none}
+  .cmdk-kind{display:none}
+}
+
+/* ---------- колода карточек со свайпами ---------- */
+.deck{position:relative;display:grid}
+.deck > *{grid-area:1 / 1}
+.deck-next{transform:translateY(14px) scale(.95);opacity:.55;pointer-events:none;filter:saturate(.8)}
+.deck-next .flip-face{box-shadow:none}
+.swipe{position:relative;z-index:1;touch-action:pan-y;cursor:grab;-webkit-user-select:none;user-select:none}
+.swipe:active{cursor:grabbing}
+.swipe:focus-visible{outline:none}
+.swipe:focus-visible .flip-face{outline:2px solid var(--accent);outline-offset:3px}
+.swipe-badge{position:absolute;top:22px;z-index:3;padding:6px 14px;border-radius:10px;font:600 15px/1 var(--font-display);letter-spacing:.02em;border:2px solid;pointer-events:none;background:var(--surface)}
+.swipe-badge.ok{left:22px;color:var(--good);border-color:var(--good);transform:rotate(-8deg)}
+.swipe-badge.bad{right:22px;color:var(--bad);border-color:var(--bad);transform:rotate(8deg)}
+.flip{cursor:inherit}
+.flash-actions .btn{min-width:120px}
+
+/* ---------- тест: точки прогресса ---------- */
+.q-dots{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0 6px}
+.q-dots i{width:16px;height:6px;border-radius:3px;background:var(--surface-2);transition:background-color .25s var(--ease),transform .25s var(--ease)}
+.q-dots i.cur{background:var(--accent);transform:scaleY(1.4)}
+.q-dots i.ok{background:var(--good)}
+.q-dots i.no{background:var(--bad)}
+.q-dots i.done{background:var(--ink-3)}
+.order-list li{cursor:grab;touch-action:none}
+.order-list li:active{cursor:grabbing}
+
+/* ---------- прогресс ---------- */
+.progress-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:18px;align-items:stretch}
+.ph-main{display:flex;align-items:center;gap:24px}
+.ph-main .ring-wrap span{font:600 22px/1 var(--font-display)}
+.ph-big{font:600 44px/1.05 var(--font-display);letter-spacing:-.03em;margin:4px 0}
+.progress-hero .grid{height:100%}
+.progress-hero .stat{justify-content:center}
+@media (max-width:1100px){.progress-hero{grid-template-columns:minmax(0,1fr)}}
+.topic-card.static:hover{transform:none;box-shadow:none;border-color:var(--line)}
+.heat{display:grid;grid-template-rows:repeat(7,14px);grid-auto-flow:column;grid-auto-columns:14px;gap:4px;overflow-x:auto;padding-bottom:4px}
+.heat i,.heat-legend i{width:14px;height:14px;border-radius:4px;display:inline-block;background:var(--surface-2)}
+.heat .l1,.heat-legend .l1{background:color-mix(in srgb,var(--vein) 35%,var(--surface-2))}
+.heat .l2,.heat-legend .l2{background:color-mix(in srgb,var(--vein) 70%,var(--surface-2))}
+.heat .l3,.heat-legend .l3{background:#9B53C9}
+.heat .l4,.heat-legend .l4{background:var(--artery)}
+.heat-legend{display:flex;align-items:center;gap:4px;margin-top:10px}
+.heat-legend span{margin:0 4px}
+
+/* ---------- мелочи ---------- */
+.hero-facts .streak-chip b{margin-right:-2px}
+.info-card{transition:none}
+
+/* ---------- телефон: ряды фильтров прокручиваются вбок ---------- */
+@media (max-width:640px){
+  .main .chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-inline:calc(-1 * max(16px, env(safe-area-inset-left,0px)));padding-inline:max(16px, env(safe-area-inset-left,0px));padding-block:2px;scroll-snap-type:x proximity}
+  .main .chips::-webkit-scrollbar{display:none}
+  .main .chips .chip{flex:none;scroll-snap-align:start}
+  .toolbar{flex-wrap:wrap}
+  .toolbar > .chips{flex:1 1 100%;min-width:0}
+}

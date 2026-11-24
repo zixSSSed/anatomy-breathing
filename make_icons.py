@@ -6,7 +6,7 @@ import math
 import pathlib
 from PIL import Image, ImageDraw, ImageFilter
 
-OUT = pathlib.Path(__file__).parent / "docs" / "icons"
+OUT = pathlib.Path(__file__).parent / "app" / "public" / "icons"
 STAGE_1, STAGE_2 = (40, 48, 118), (11, 13, 26)
 CORAL, CORAL_2 = (240, 104, 84), (255, 150, 122)
 AIR = (190, 198, 255)
